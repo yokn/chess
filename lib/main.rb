@@ -10,6 +10,7 @@
 #   Display the updated board
 #   check for a check or mate
 
+# Make it so you can save the board at any time (remember how to serialize?)
 require_relative 'game'
 
-Game.new.play_game
+Game.new.setup_game
