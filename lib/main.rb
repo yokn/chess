@@ -12,10 +12,13 @@
 #   Display the updated board
 #   check for a check or mate
 
+# Convert to algebraic notation for user input and board display (but NOT the internal board representation)
+# Allow pieces to be blocked by other pieces
+# Allow piece to capture other pieces
 # Make it so you can save the board at any time (remember how to serialize?)
 # Add special moves: En passant, castling, promotion
 # Add basic ai
-# Convert to algebraic notation for user input and board display (but NOT the internal board representation)
+
 require_relative 'game'
 require_relative 'board'
 require_relative 'player'

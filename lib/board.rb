@@ -10,6 +10,7 @@ class Board
     set_black_pawns
     set_white_pawns
     set_white_backrow
+    generator
   end
 
   # Make the knight N maybe?
@@ -31,20 +32,11 @@ class Board
     p 'Please enter the location you wish to move to'
     new_pos += get_user_input.split(',')
     if valid_move?(old_pos, new_pos)
-      move_piece(old_pos, new_pos)
+      make_move(old_pos, new_pos)
     else
       p 'Invalid move. Try again.'
       get_move
     end
-  end
-
-  def valid_move?(old_pos, new_pos)
-    @board[old_pos[0].to_i][old_pos[1].to_i].available_moves.include?([new_pos[0].to_i, new_pos[1].to_i]) ? true : false
-  end
-
-  def move_piece(old_pos, new_pos)
-    @board[new_pos[0].to_i][new_pos[1].to_i] = @board[old_pos[0].to_i][old_pos[1].to_i]
-    @board[old_pos[0].to_i][old_pos[1].to_i] = '-'
   end
 
   def tie?; end
@@ -52,6 +44,34 @@ class Board
   def checkmate?; end
 
   private
+
+  def generator
+    @board.each do |row|
+      row.each do |slot|
+        next if slot == '-'
+
+        # p slot
+        slot.generate_available_moves(slot.position, slot.moveset)
+        # p slot
+      end
+    end
+  end
+
+  # need input validation on the new_pos or this throws an error
+  # needs to make sure players can only move pieces of their own color
+  def valid_move?(old_pos, new_pos)
+    @board[old_pos[0].to_i][old_pos[1].to_i].available_moves.include?([new_pos[0].to_i, new_pos[1].to_i]) ? true : false
+  end
+
+  def make_move(old_pos, new_pos)
+    move_piece(old_pos, new_pos)
+    generator
+  end
+
+  def move_piece(old_pos, new_pos)
+    @board[new_pos[0].to_i][new_pos[1].to_i] = @board[old_pos[0].to_i][old_pos[1].to_i]
+    @board[old_pos[0].to_i][old_pos[1].to_i] = '-'
+  end
 
   def get_user_input
     gets.chomp
@@ -69,14 +89,14 @@ class Board
   end
 
   def set_black_pawns
-    @board[1][0] = Pawn.new([0, 0], 'B')
-    @board[1][1] = Pawn.new([0, 1], 'B')
-    @board[1][2] = Pawn.new([0, 2], 'B')
-    @board[1][3] = Pawn.new([0, 3], 'B')
-    @board[1][4] = Pawn.new([0, 4], 'B')
-    @board[1][5] = Pawn.new([0, 5], 'B')
-    @board[1][6] = Pawn.new([0, 6], 'B')
-    @board[1][7] = Pawn.new([0, 7], 'B')
+    @board[1][0] = Pawn.new([1, 0], 'B')
+    @board[1][1] = Pawn.new([1, 1], 'B')
+    @board[1][2] = Pawn.new([1, 2], 'B')
+    @board[1][3] = Pawn.new([1, 3], 'B')
+    @board[1][4] = Pawn.new([1, 4], 'B')
+    @board[1][5] = Pawn.new([1, 5], 'B')
+    @board[1][6] = Pawn.new([1, 6], 'B')
+    @board[1][7] = Pawn.new([1, 7], 'B')
   end
 
   def set_white_pawns
