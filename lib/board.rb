@@ -1,12 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'pawn'
-require_relative 'rook'
-require_relative 'knight'
-require_relative 'bishop'
-require_relative 'king'
-require_relative 'queen'
-
 class Board
   def initialize
     @board = Array.new(8) { Array.new(8, '-') }
@@ -19,21 +12,7 @@ class Board
     set_white_backrow
   end
 
-  def get_move
-    p 'Please enter the location the piece you want to move'
-    old_pos = get_user_input
-    p 'Please enter the location you want to move to'
-    new_pos = get_user_input
-    if valid_move?(old_pos, new_pos)
-      move_piece(old_pos, new_pos)
-    else
-      p 'Invalid move. Try again.'
-      get_move
-    end
-  end
-
-  def valid_move?(old_pos, new_pos); end
-
+  # Make the knight N maybe?
   def to_s
     @board.each do |row|
       row.each do |slot|
@@ -42,6 +21,30 @@ class Board
       end
       puts ''
     end
+  end
+
+  def get_move
+    old_pos = []
+    new_pos = []
+    p 'Please enter the location of the piece you wish to move'
+    old_pos += get_user_input.split(',')
+    p 'Please enter the location you wish to move to'
+    new_pos += get_user_input.split(',')
+    if valid_move?(old_pos, new_pos)
+      move_piece(old_pos, new_pos)
+    else
+      p 'Invalid move. Try again.'
+      get_move
+    end
+  end
+
+  def valid_move?(old_pos, new_pos)
+    @board[old_pos[0].to_i][old_pos[1].to_i].available_moves.include?([new_pos[0].to_i, new_pos[1].to_i]) ? true : false
+  end
+
+  def move_piece(old_pos, new_pos)
+    @board[new_pos[0].to_i][new_pos[1].to_i] = @board[old_pos[0].to_i][old_pos[1].to_i]
+    @board[old_pos[0].to_i][old_pos[1].to_i] = '-'
   end
 
   def tie?; end
