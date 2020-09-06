@@ -2,12 +2,6 @@
 
 require_relative 'board'
 require_relative 'player'
-require_relative 'pawn'
-require_relative 'rook'
-require_relative 'knight'
-require_relative 'bishop'
-require_relative 'king'
-require_relative 'queen'
 
 class Game
   def initialize
@@ -18,6 +12,7 @@ class Game
 
   def setup_game
     @current_player = @player2
+    @board.set_pieces
     play_game
   end
 
@@ -29,8 +24,8 @@ class Game
 
   def play_game
     change_current_player
-    @board.get_move
     @board.to_s
+    @board.get_move
     game_over?
   end
 
