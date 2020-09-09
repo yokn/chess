@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class Queen < Piece
-  attr_reader :position
-  attr_accessor :available_moves
+  attr_accessor :available_moves, :position, :color, :slider
 
   def initialize(position, color)
     @position = position
     @color = color
     @available_moves = []
+    @slider = true
+    @last_move = false
   end
 
   # bishop + rook

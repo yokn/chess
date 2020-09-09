@@ -14,7 +14,9 @@
 
 # Convert to algebraic notation for user input and board display (but NOT the internal board representation)
 # Allow pieces to be blocked by other pieces
-# Allow piece to capture other pieces
+# Pawn capture
+# fix pawns moving backwards
+# change all instances of "slot" to "tile"
 # Make it so you can save the board at any time (remember how to serialize?)
 # Add special moves: En passant, castling, promotion
 # Add basic ai
@@ -23,6 +25,7 @@ require_relative 'game'
 require_relative 'board'
 require_relative 'player'
 require_relative 'piece'
+require_relative 'node'
 require_relative 'pawn'
 require_relative 'rook'
 require_relative 'knight'

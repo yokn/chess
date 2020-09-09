@@ -29,6 +29,7 @@ class Board
     new_pos = []
     p 'Please enter the location of the piece you wish to move'
     old_pos += get_user_input.split(',')
+    p "available moves: #{@board[old_pos[0].to_i][old_pos[1].to_i].available_moves} "
     p 'Please enter the location you wish to move to'
     new_pos += get_user_input.split(',')
     if valid_move?(old_pos, new_pos)
@@ -50,9 +51,7 @@ class Board
       row.each do |slot|
         next if slot == '-'
 
-        # p slot
-        slot.generate_available_moves(slot.position, slot.moveset)
-        # p slot
+        slot.level_order(slot.position, @board)
       end
     end
   end
@@ -60,7 +59,11 @@ class Board
   # need input validation on the new_pos or this throws an error
   # needs to make sure players can only move pieces of their own color
   def valid_move?(old_pos, new_pos)
-    @board[old_pos[0].to_i][old_pos[1].to_i].available_moves.include?([new_pos[0].to_i, new_pos[1].to_i]) ? true : false
+    p @board[old_pos[0].to_i][old_pos[1].to_i].available_moves
+    @board[old_pos[0].to_i][old_pos[1].to_i]
+      .available_moves.include?(
+        [new_pos[0].to_i, new_pos[1].to_i]
+      )
   end
 
   def make_move(old_pos, new_pos)
@@ -69,7 +72,9 @@ class Board
   end
 
   def move_piece(old_pos, new_pos)
+    p new_pos
     @board[new_pos[0].to_i][new_pos[1].to_i] = @board[old_pos[0].to_i][old_pos[1].to_i]
+    @board[new_pos[0].to_i][new_pos[1].to_i].position = [new_pos[0].to_i, new_pos[1].to_i]
     @board[old_pos[0].to_i][old_pos[1].to_i] = '-'
   end
 

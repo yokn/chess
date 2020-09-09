@@ -8,7 +8,7 @@ class Game
   end
 
   def setup_game
-    @current_player = @player2
+    @current_player = @player1
     @board.set_pieces
     play_game
   end
@@ -20,10 +20,10 @@ class Game
   end
 
   def play_game
-    change_current_player
     @board.to_s
     @board.get_move
     game_over?
+    change_current_player
   end
 
   def game_over?
