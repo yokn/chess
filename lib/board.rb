@@ -16,8 +16,8 @@ class Board
   # Make the knight N maybe?
   def to_s
     @board.each do |row|
-      row.each do |slot|
-        print slot == '-' ? '-' : slot.class.name[0]
+      row.each do |tile|
+        print tile == '-' ? '-' : tile.class.name[0]
         print ' '
       end
       puts ''
@@ -48,10 +48,10 @@ class Board
 
   def generator
     @board.each do |row|
-      row.each do |slot|
-        next if slot == '-'
+      row.each do |tile|
+        next if tile == '-'
 
-        slot.level_order(slot.position, @board)
+        tile.level_order(tile.position, @board)
       end
     end
   end
