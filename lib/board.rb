@@ -52,6 +52,8 @@ class Board
         next if tile == '-'
 
         tile.level_order(tile.position, @board)
+        p "working on piece: #{tile.color} #{tile.class.name}"
+        tile.level_order(tile.position, @board)
       end
     end
   end
