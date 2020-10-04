@@ -3,43 +3,39 @@
 class Piece
   def initialize; end
 
-  # refactor movesets
-  # if last move type == push, can keep going
-  # if last move type == capture, stops
-  # add if slider check
-  # vvvvvvvvvvvvvvvvvvvvvvvvvvv
-  # SWITCH TO GENERATING RAYS FOR SLIDER PIECES (ONE FOR EACH DIRECTION)
-  # ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  # PREVENT KNIGHT FROM EATING OWN PIECES and invalid moves
-  # maybe move movegen logic unique to each class instead of having them all inherit it
+  # maybe make movegen logic unique to each class instead of having them all inherit it
   def generate_available_moves(pos, parent, board, nodes = [])
-    moveset.each do |move|
-      new_column = pos[0] + move[0]
-      new_row = pos[1] + move[1]
-      next if
-        out_of_bounds?(new_column, new_row) ||
-        occupied_by_same_color?(new_column, new_row, board) ||
-        @already_moved.include?([new_column, new_row])
+    moveset.each do |direction|
+      blocked = false
+      direction.each do |move|
+        new_column = pos[0] + move[0]
+        new_row = pos[1] + move[1]
+        if  out_of_bounds?(new_column, new_row) ||
+            occupied_by_same_color?(new_column, new_row, board) ||
+            @already_moved.include?([new_column, new_row]) ||
+            blocked
+          blocked = true
+          next
+        end
 
-      # determine_move_type(new_column, new_row, board, parent)
-      # slidergen if @slider
-
-      @already_moved << [new_column, new_row]
-      nodes << Node.new([new_column, new_row], parent)
-      p "[#{new_column},#{new_row}] is possible for #{self.class.name} at #{pos}"
+        @already_moved << [new_column, new_row]
+        nodes << Node.new([new_column, new_row], parent)
+        p "[#{new_column},#{new_row}] is possible for #{self.class.name} at #{pos}"
+        blocked = true if capture_move?(new_column, new_row, board)
+      end
     end
     nodes
   end
 
   # change the knight into something correct and relevant
-  # remove queue
   def level_order(pointer, board, _queue = [])
+    @available_moves = []
     @already_moved = []
     knight = Node.new(pointer)
 
     result = generate_available_moves(knight.data, knight, board)
-    p result
-    return if result.empty?
+    # p result
+    # return if result.empty?
 
     until result.empty?
       knight = result.shift
@@ -69,21 +65,6 @@ class Piece
       false
     end
   end
-
-  # this doesn't work
-  # def same_tile?(new_column, new_row, board)
-  #   board[new_column][new_row] == position
-  # end
-
-  # change this method's and the variable's names
-  # def determine_move_type(new_column, new_row, board, parent)
-  #   @last_move = if slider_changing_directions?(new_column, new_row, board, parent) ||
-  #                   capture_move?(new_column, new_row, board)
-  #                  true
-  #                else
-  #                  false
-  #                end
-  # end
 
   def capture_move?(new_column, new_row, board)
     p "capture_move for #{position} at #{[new_column, new_row]}"
