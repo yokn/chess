@@ -13,21 +13,15 @@ class Pawn < Piece
 
   # only piece in the game that changes moveset depending on the player
   # need to add diagonal capture
-  # fix pawns moving backwards
   # fix the position check for double moves
   def moveset
     if @color == 'B'
-      if @position[0] == 1
-        [[1, 0], [2, 0]]
-      else
-        [[1, 0]]
-      end
+
+      [[1, 0]]
+
     else
-      if @position[0] == 6
-        [[-1, 0], [-2, 0]]
-      else
-        [[-1, 0]]
-      end
+      [[-1, 0]]
+
     end
   end
 end

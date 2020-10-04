@@ -11,12 +11,10 @@
 #   Update each piece's available_moves
 #   Display the updated board
 #   check for a check or mate
+# Display the game result
 
 # Convert to algebraic notation for user input and board display (but NOT the internal board representation)
-# Allow pieces to be blocked by other pieces
 # Pawn capture
-# fix pawns moving backwards
-# change all instances of "slot" to "tile"
 # Make it so you can save the board at any time (remember how to serialize?)
 # Add special moves: En passant, castling, promotion
 # Add basic ai
