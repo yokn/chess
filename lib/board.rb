@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 class Board
   def initialize
     @board = Array.new(8) { Array.new(8, '-') }
@@ -24,14 +25,15 @@ class Board
     end
   end
 
-  def get_move
-    old_pos = []
-    new_pos = []
-    p 'Please enter the location of the piece you wish to move'
-    old_pos += get_user_input.split(',')
-    p "available moves: #{@board[old_pos[0].to_i][old_pos[1].to_i].available_moves} "
-    p 'Please enter the location you wish to move to'
-    new_pos += get_user_input.split(',')
+  def get_move(old_pos = [], new_pos = [])
+    p 'Please enter the location of the piece you wish to move in algebraic notation'
+    old_pos += Translator.to_matrix(get_user_input)
+
+    display_available_moves(old_pos)
+    
+    p 'Please enter the location you wish to move to in algebraic notation'
+    new_pos += Translator.to_matrix(get_user_input)
+
     if valid_move?(old_pos, new_pos)
       make_move(old_pos, new_pos)
     else
@@ -45,6 +47,14 @@ class Board
   def checkmate?; end
 
   private
+
+  def display_available_moves(old_pos)
+    puts 'available moves:'
+    @board[old_pos[0].to_i][old_pos[1].to_i].available_moves.each do |move|
+      print Translator.to_algebraic(move) + ' '
+    end
+    puts ''
+  end
 
   def generator
     @board.each do |row|
