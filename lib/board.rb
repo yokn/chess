@@ -25,21 +25,18 @@ class Board
     end
   end
 
+  # do we need the += here anymore?
   def get_move(old_pos = [], new_pos = [])
     p 'Please enter the location of the piece you wish to move in algebraic notation'
     old_pos += Translator.to_matrix(get_user_input)
+    return invalid_move if empty_tile?(old_pos)
 
     display_available_moves(old_pos)
-    
+
     p 'Please enter the location you wish to move to in algebraic notation'
     new_pos += Translator.to_matrix(get_user_input)
-
-    if valid_move?(old_pos, new_pos)
-      make_move(old_pos, new_pos)
-    else
-      p 'Invalid move. Try again.'
-      get_move
-    end
+    # this might need an explicit return invalid_move as well
+    valid_move?(old_pos, new_pos) ? make_move(old_pos, new_pos) : invalid_move
   end
 
   def tie?; end
@@ -47,6 +44,15 @@ class Board
   def checkmate?; end
 
   private
+
+  def empty_tile?(old_pos)
+    @board[old_pos[0].to_i][old_pos[1].to_i] == '-'
+  end
+
+  def invalid_move
+    p 'Invalid move. Try again.'
+    get_move
+  end
 
   def display_available_moves(old_pos)
     puts 'available moves:'
@@ -62,7 +68,7 @@ class Board
         next if tile == '-'
 
         tile.level_order(tile.position, @board)
-        p "working on piece: #{tile.color} #{tile.class.name}"
+        # p "working on piece: #{tile.color} #{tile.class.name}"
         tile.level_order(tile.position, @board)
       end
     end

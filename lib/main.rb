@@ -13,11 +13,11 @@
 #   check for a check or mate
 # Display the game result
 
-# Convert to algebraic notation for user input and board display (but NOT the internal board representation)
 # Pawn capture
 # Make it so you can save the board at any time (remember how to serialize?)
 # Add special moves: En passant, castling, promotion
 # Add basic ai
+# Input validation
 
 require_relative 'game'
 require_relative 'board'
