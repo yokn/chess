@@ -74,10 +74,9 @@ class Board
     end
   end
 
-  # need input validation on the new_pos or this throws an error
   # needs to make sure players can only move pieces of their own color
   def valid_move?(old_pos, new_pos)
-    p @board[old_pos[0].to_i][old_pos[1].to_i].available_moves
+    # p @board[old_pos[0].to_i][old_pos[1].to_i].available_moves
     @board[old_pos[0].to_i][old_pos[1].to_i]
       .available_moves.include?(
         [new_pos[0].to_i, new_pos[1].to_i]
@@ -90,14 +89,19 @@ class Board
   end
 
   def move_piece(old_pos, new_pos)
-    p new_pos
+    # p new_pos
     @board[new_pos[0].to_i][new_pos[1].to_i] = @board[old_pos[0].to_i][old_pos[1].to_i]
     @board[new_pos[0].to_i][new_pos[1].to_i].position = [new_pos[0].to_i, new_pos[1].to_i]
     @board[old_pos[0].to_i][old_pos[1].to_i] = '-'
   end
 
   def get_user_input
-    gets.chomp
+    input = gets.chomp
+    until input.match(/^[a-h][1-8]/i)
+      puts 'Invalid input. Make sure you are using algebraic notation e.g.: a2'
+      input = gets.chomp
+    end
+    input
   end
 
   def set_black_backrow
