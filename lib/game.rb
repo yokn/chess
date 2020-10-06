@@ -3,8 +3,8 @@
 class Game
   def initialize
     @board = Board.new
-    @player1 = Player.new('white')
-    @player2 = Player.new('black')
+    @player1 = Player.new('W')
+    @player2 = Player.new('B')
   end
 
   def setup_game
@@ -20,10 +20,12 @@ class Game
   end
 
   def play_game
-    @board.to_s
-    @board.get_move
-    game_over?
-    change_current_player
+    until game_over?
+      @board.to_s
+      announce_turn
+      @board.get_move(@current_player.color)
+      change_current_player
+    end
   end
 
   def game_over?
@@ -32,11 +34,15 @@ class Game
     elsif @board.checkmate?
       display_winner
     else
-      play_game
+      false
     end
   end
 
   def display_winner
     puts "#{@current_player} won!"
   end
+end
+
+def announce_turn
+  puts @current_player.color == 'W' ? "White's turn" : "Black's turn"
 end

@@ -24,10 +24,11 @@ class Board
     end
   end
 
-  def get_move(old_pos = [], new_pos = [])
+  def get_move(color, old_pos = [], new_pos = [])
     p 'Please enter the location of the piece you wish to move in algebraic notation'
     old_pos += Translator.to_matrix(get_user_input)
-    return invalid_move if empty_tile?(old_pos)
+    return invalid_move(color) if empty_tile?(old_pos)
+    return wrong_player(color) if wrong_player?(old_pos, color)
 
     display_available_moves(old_pos)
 
@@ -42,13 +43,22 @@ class Board
 
   private
 
+  def wrong_player?(old_pos, color)
+    @board[old_pos[0].to_i][old_pos[1].to_i].color != color
+  end
+
+  def wrong_player(color)
+    p "That's not your piece!"
+    get_move(color)
+  end
+
   def empty_tile?(old_pos)
     @board[old_pos[0].to_i][old_pos[1].to_i] == '-'
   end
 
-  def invalid_move
+  def invalid_move(color)
     p 'Invalid move. Try again.'
-    get_move
+    get_move(color)
   end
 
   def display_available_moves(old_pos)
@@ -93,7 +103,7 @@ class Board
 
   def get_user_input
     input = gets.chomp
-    until input.match(/^[a-h][1-8]/i)
+    until input.match(/^[a-h][1-8]$/i)
       puts 'Invalid input. Make sure you are using algebraic notation e.g.: a2'
       input = gets.chomp
     end
