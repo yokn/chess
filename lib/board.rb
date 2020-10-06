@@ -14,7 +14,6 @@ class Board
     generator
   end
 
-  # Make the knight N maybe?
   def to_s
     @board.each do |row|
       row.each do |tile|
@@ -25,7 +24,6 @@ class Board
     end
   end
 
-  # do we need the += here anymore?
   def get_move(old_pos = [], new_pos = [])
     p 'Please enter the location of the piece you wish to move in algebraic notation'
     old_pos += Translator.to_matrix(get_user_input)
@@ -35,7 +33,6 @@ class Board
 
     p 'Please enter the location you wish to move to in algebraic notation'
     new_pos += Translator.to_matrix(get_user_input)
-    # this might need an explicit return invalid_move as well
     valid_move?(old_pos, new_pos) ? make_move(old_pos, new_pos) : invalid_move
   end
 
@@ -105,12 +102,12 @@ class Board
 
   def set_black_backrow
     @board[0][0] = Rook.new([0, 0], 'B')
-    @board[0][1] = Knight.new([0, 1], 'B')
+    @board[0][1] = Night.new([0, 1], 'B')
     @board[0][2] = Bishop.new([0, 2], 'B')
     @board[0][3] = Queen.new([0, 3], 'B')
     @board[0][4] = King.new([0, 4], 'B')
     @board[0][5] = Bishop.new([0, 5], 'B')
-    @board[0][6] = Knight.new([0, 6], 'B')
+    @board[0][6] = Night.new([0, 6], 'B')
     @board[0][7] = Rook.new([0, 7], 'B')
   end
 
@@ -138,12 +135,12 @@ class Board
 
   def set_white_backrow
     @board[7][0] = Rook.new([7, 0], 'W')
-    @board[7][1] = Knight.new([7, 1], 'W')
+    @board[7][1] = Night.new([7, 1], 'W')
     @board[7][2] = Bishop.new([7, 2], 'W')
     @board[7][3] = Queen.new([7, 3], 'W')
     @board[7][4] = King.new([7, 4], 'W')
     @board[7][5] = Bishop.new([7, 5], 'W')
-    @board[7][6] = Knight.new([7, 6], 'W')
+    @board[7][6] = Night.new([7, 6], 'W')
     @board[7][7] = Rook.new([7, 7], 'W')
   end
 end

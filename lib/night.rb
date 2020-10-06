@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Knight < Piece
+class Night < Piece
   attr_accessor :available_moves, :position, :color, :slider
 
   def initialize(position, color)
