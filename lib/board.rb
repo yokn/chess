@@ -67,9 +67,8 @@ class Board
       row.each do |tile|
         next if tile == '-'
 
-        tile.level_order(tile.position, @board)
-        # p "working on piece: #{tile.color} #{tile.class.name}"
-        tile.level_order(tile.position, @board)
+        p "working on piece: #{tile.color} #{tile.class.name}"
+        tile.level_order(@board)
       end
     end
   end

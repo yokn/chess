@@ -13,7 +13,6 @@
 #   check for a check or mate
 # Display the game result
 
-# Pawn capture
 # Make it so you can save the board at any time (remember how to serialize?)
 # Add special moves: En passant, castling, promotion
 # Add basic ai

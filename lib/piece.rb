@@ -20,7 +20,7 @@ class Piece
 
         @already_moved << [new_column, new_row]
         nodes << Node.new([new_column, new_row], parent)
-        p "[#{new_column},#{new_row}] is possible for #{self.class.name} at #{pos}"
+        # p "[#{new_column},#{new_row}] is possible for #{self.class.name} at #{pos}"
         blocked = true if capture_move?(new_column, new_row, board)
       end
     end
@@ -28,10 +28,10 @@ class Piece
   end
 
   # change the knight into something correct and relevant
-  def level_order(pointer, board, _queue = [])
+  def level_order(board)
     @available_moves = []
     @already_moved = []
-    knight = Node.new(pointer)
+    knight = Node.new(position)
 
     result = generate_available_moves(knight.data, knight, board)
     # p result
@@ -48,7 +48,7 @@ class Piece
 
   def out_of_bounds?(new_column, new_row)
     if (new_column > 7) || new_column.negative? || ((new_row > 7) || new_row.negative?)
-      p "oob for #{position} at #{[new_column, new_row]}"
+      # p "oob for #{position} at #{[new_column, new_row]}"
       true
     else
       false
@@ -67,7 +67,7 @@ class Piece
   end
 
   def capture_move?(new_column, new_row, board)
-    p "capture_move for #{position} at #{[new_column, new_row]}"
+    # p "capture_move for #{position} at #{[new_column, new_row]}"
     board[new_column][new_row] != '-'
   end
 end
