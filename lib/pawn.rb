@@ -18,19 +18,10 @@ class Pawn < Piece
 
   # only piece in the game that changes moveset depending on the player
   def moveset
-    p @position
     if @color == 'B'
-      if STARTING_POSITION_BLACK_PAWN.include?(@position)
-        [[1, 0], [2, 0]]
-      else
-        [[1, 0]]
-      end
+      STARTING_POSITION_BLACK_PAWN.include?(@position) ? [[1, 0], [2, 0]] : [[1, 0]]
     else
-      if STARTING_POSITION_WHITE_PAWN.include?(@position)
-        [[-1, 0], [-2, 0]]
-      else
-        [[-1, 0]]
-      end
+      STARTING_POSITION_WHITE_PAWN.include?(@position) ? [[-1, 0], [-2, 0]] : [[-1, 0]]
     end
   end
 
@@ -38,12 +29,7 @@ class Pawn < Piece
     moveset.each do |move|
       new_column = pos[0] + move[0]
       new_row = pos[1] + move[1]
-      if  out_of_bounds?(new_column, new_row) ||
-          occupied_by_same_color?(new_column, new_row, board) ||
-          @already_moved.include?([new_column, new_row]) ||
-          blocked_pawn?(new_column, new_row, board)
-        next
-      end
+      next if common_legality_checks(new_column, new_row, board) || blocked_pawn?(new_column, new_row, board)
 
       @already_moved << [new_column, new_row]
       nodes << Node.new([new_column, new_row], parent)
@@ -58,36 +44,31 @@ class Pawn < Piece
   end
 
   # pasta la vista
-  def add_diagonal_captures(pos, board, target_tile_black = [], target_tile_white = [])
-    upper_limit = 8
-    lower_limit = 0
+  def add_diagonal_captures(pos, board)
     DIAGONAL_CAPTURES_BLACK_PAWN.each do |move|
       new_column = pos[0] + move[0]
       new_row = pos[1] + move[1]
-      next if new_row > upper_limit || new_row < lower_limit || new_column > upper_limit || new_column < lower_limit
 
-      target_tile_black << board[new_column][new_row]
+      # not sure if it needs to be -1
+      next if over_limit?(new_row, new_column, 7, -1)
+
+      tile = board[new_column][new_row]
+      @available_moves << tile.position unless tile.nil? || tile == '-' || tile.color == color || color == 'W'
     end
 
     DIAGONAL_CAPTURES_WHITE_PAWN.each do |move|
       new_column = pos[0] + move[0]
       new_row = pos[1] + move[1]
-      next if new_row > upper_limit || new_row < lower_limit || new_column > upper_limit || new_column < lower_limit
 
-      target_tile_white << board[new_column][new_row]
+      next if over_limit?(new_row, new_column, 8, 0)
+
+      tile = board[new_column][new_row]
+      @available_moves << tile.position unless tile.nil? || tile == '-' || tile.color == color || color == 'B'
     end
-    if color == 'B'
-      target_tile_black.each do |tile|
-        next if tile.nil? || tile == '-' || tile.color == color
+  end
 
-        @available_moves << tile.position
-      end
-    else
-      target_tile_white.each do |tile|
-        next if tile.nil? || tile == '-' || tile.color == color
-
-        @available_moves << tile.position
-      end
-    end
+  # don't know why they need different limits
+  def over_limit?(new_row, new_column, upper_limit, lower_limit)
+    new_row > upper_limit || new_row < lower_limit || new_column > upper_limit || new_column < lower_limit
   end
 end

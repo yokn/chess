@@ -10,10 +10,8 @@ class Piece
       direction.each do |move|
         new_column = pos[0] + move[0]
         new_row = pos[1] + move[1]
-        if  out_of_bounds?(new_column, new_row) ||
-            occupied_by_same_color?(new_column, new_row, board) ||
-            @already_moved.include?([new_column, new_row]) ||
-            blocked
+        if common_legality_checks(new_column, new_row, board) ||
+           blocked
           blocked = true
           next
         end
@@ -35,7 +33,6 @@ class Piece
 
     result = generate_available_moves(knight.data, knight, board)
     # p result
-    # return if result.empty?
 
     until result.empty?
       knight = result.shift
@@ -45,6 +42,12 @@ class Piece
   end
 
   private
+
+  def common_legality_checks(new_column, new_row, board)
+    out_of_bounds?(new_column, new_row) ||
+      occupied_by_same_color?(new_column, new_row, board) ||
+      @already_moved.include?([new_column, new_row])
+  end
 
   def out_of_bounds?(new_column, new_row)
     if (new_column > 7) || new_column.negative? || ((new_row > 7) || new_row.negative?)
