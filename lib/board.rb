@@ -34,7 +34,7 @@ class Board
 
     p 'Please enter the location you wish to move to in algebraic notation'
     new_pos += Translator.to_matrix(get_user_input)
-    valid_move?(old_pos, new_pos) ? make_move(old_pos, new_pos) : invalid_move
+    valid_move?(old_pos, new_pos) ? make_move(old_pos, new_pos) : invalid_move(color)
   end
 
   def tie?; end
