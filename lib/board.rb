@@ -57,10 +57,10 @@ class Board
   # helper of to_s
   def print_board(result)
     result.each_with_index do |tile, index|
-      puts '' if (index % 8).zero?
+      puts '' if (index % 8).zero? && index != 0
       print tile
       print ' '
-      puts '' if (index % 63).zero?
+      puts '' if (index % 63).zero? && index != 0
     end
   end
 
