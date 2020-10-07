@@ -12,22 +12,21 @@ require_relative '../lib/queen'
 require_relative '../lib/king'
 
 # rubocop:disable Metrics/BlockLength
-# rubocop:disable Style/WordArray
 describe Board do
-  INITIAL_BOARD_STATE = [['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
-                         ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-                         ['-', '-', '-', '-', '-', '-', '-', '-'],
-                         ['-', '-', '-', '-', '-', '-', '-', '-'],
-                         ['-', '-', '-', '-', '-', '-', '-', '-'],
-                         ['-', '-', '-', '-', '-', '-', '-', '-'],
-                         ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-                         ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']].freeze
+  INITIAL_BOARD_STATE = ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R',
+                         'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+                         '-', '-', '-', '-', '-', '-', '-', '-',
+                         '-', '-', '-', '-', '-', '-', '-', '-',
+                         '-', '-', '-', '-', '-', '-', '-', '-',
+                         '-', '-', '-', '-', '-', '-', '-', '-',
+                         'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+                         'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'].freeze
 
   context 'before the game starts' do
     subject(:board) { described_class.new }
-    # it 'creates the board correctly' do
-    #   expect(board.board).to eq(INITIAL_BOARD_STATE)
-    # end
+    it 'creates the board correctly' do
+      expect(board.to_s).to eq(INITIAL_BOARD_STATE)
+    end
   end
   context 'while the game is not over' do
     context 'when adding a move to the board' do
@@ -44,17 +43,16 @@ describe Board do
           expect(tile.class.name).to eq('Pawn')
           expect(tile.color).to eq('W')
         end
-        # it 'displays the board correctly after a move' do
-        #   expect(board.to_s).to eq([['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
-        #                             ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        #                             ['-', '-', '-', '-', '-', '-', '-', '-'],
-        #                             ['-', '-', '-', '-', '-', '-', '-', '-'],
-        #                             ['P', '-', '-', '-', '-', '-', '-', '-'],
-        #                             ['-', '-', '-', '-', '-', '-', '-', '-'],
-        #                             ['-', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-        #                             ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']])
-        #   board.to_s
-        # end
+        it 'displays the board correctly after a move' do
+          expect(board.to_s).to eq(['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R',
+                                    'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+                                    '-', '-', '-', '-', '-', '-', '-', '-',
+                                    '-', '-', '-', '-', '-', '-', '-', '-',
+                                    'P', '-', '-', '-', '-', '-', '-', '-',
+                                    '-', '-', '-', '-', '-', '-', '-', '-',
+                                    '-', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+                                    'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'])
+        end
       end
       context 'the move is invalid' do
         it 'does not add the move to the board' do

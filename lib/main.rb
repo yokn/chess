@@ -17,6 +17,7 @@
 # Add special moves: En passant, castling, promotion
 # Add basic ai
 # Input validation
+# Add tests for pawn double moves, captures, blocking
 
 require_relative 'game'
 require_relative 'board'

@@ -16,16 +16,6 @@ class Board
     set_white_backrow
   end
 
-  def to_s
-    @board.each do |row|
-      row.each do |tile|
-        print tile == '-' ? '-' : tile.class.name[0]
-        print ' '
-      end
-      puts ''
-    end
-  end
-
   def get_move(color, old_pos = [], new_pos = [])
     p 'Please enter the location of the piece you wish to move in algebraic notation'
     old_pos += Translator.to_matrix(player_input)
@@ -43,7 +33,36 @@ class Board
 
   def checkmate?; end
 
+  # def to_s
+  #   @board.each do |row|
+  #     row.each do |tile|
+  #       print tile == '-' ? '-' : tile.class.name[0]
+  #       print ' '
+  #     end
+  #     puts ''
+  #   end
+  # end
+
+  def to_s(board = @board, result = [])
+    board.each do |row|
+      row.each do |tile|
+        result << (tile == '-' ? '-' : tile.class.name[0])
+      end
+    end
+    print_board(result)
+  end
+
   private
+
+  # helper of to_s
+  def print_board(result)
+    result.each_with_index do |tile, index|
+      puts '' if (index % 8).zero?
+      print tile
+      print ' '
+      puts '' if (index % 63).zero?
+    end
+  end
 
   def wrong_player?(old_pos, color)
     @board[old_pos[0].to_i][old_pos[1].to_i].color != color
