@@ -2,8 +2,11 @@
 
 # rubocop:disable Metrics/ClassLength
 class Board
+  attr_reader :board
   def initialize
     @board = Array.new(8) { Array.new(8, '-') }
+    set_pieces
+    generator
   end
 
   def set_pieces
@@ -11,7 +14,6 @@ class Board
     set_black_pawns
     set_white_pawns
     set_white_backrow
-    generator
   end
 
   def to_s
@@ -26,14 +28,14 @@ class Board
 
   def get_move(color, old_pos = [], new_pos = [])
     p 'Please enter the location of the piece you wish to move in algebraic notation'
-    old_pos += Translator.to_matrix(get_user_input)
+    old_pos += Translator.to_matrix(player_input)
     return invalid_move(color) if empty_tile?(old_pos)
     return wrong_player(color) if wrong_player?(old_pos, color)
 
     display_available_moves(old_pos)
 
     p 'Please enter the location you wish to move to in algebraic notation'
-    new_pos += Translator.to_matrix(get_user_input)
+    new_pos += Translator.to_matrix(player_input)
     valid_move?(old_pos, new_pos) ? make_move(old_pos, new_pos) : invalid_move(color)
   end
 
@@ -74,13 +76,12 @@ class Board
       row.each do |tile|
         next if tile == '-'
 
-        p "working on piece: #{tile.color} #{tile.class.name}"
+        # p "working on piece: #{tile.color} #{tile.class.name}"
         tile.level_order(@board)
       end
     end
   end
 
-  # needs to make sure players can only move pieces of their own color
   def valid_move?(old_pos, new_pos)
     # p @board[old_pos[0].to_i][old_pos[1].to_i].available_moves
     @board[old_pos[0].to_i][old_pos[1].to_i]
@@ -95,13 +96,12 @@ class Board
   end
 
   def move_piece(old_pos, new_pos)
-    # p new_pos
     @board[new_pos[0].to_i][new_pos[1].to_i] = @board[old_pos[0].to_i][old_pos[1].to_i]
     @board[new_pos[0].to_i][new_pos[1].to_i].position = [new_pos[0].to_i, new_pos[1].to_i]
     @board[old_pos[0].to_i][old_pos[1].to_i] = '-'
   end
 
-  def get_user_input
+  def player_input
     input = gets.chomp
     until input.match(/^[a-h][1-8]$/i)
       puts 'Invalid input. Make sure you are using algebraic notation e.g.: a2'

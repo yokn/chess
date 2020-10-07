@@ -61,12 +61,13 @@ class Piece
   def occupied_by_same_color?(new_column, new_row, board)
     return if board[new_column][new_row] == '-'
 
-    if board[new_column][new_row].color == color
-      p "same_color for #{position} at #{[new_column, new_row]}"
-      true
-    else
-      false
-    end
+    # if board[new_column][new_row].color == color
+    #    p "same_color for #{position} at #{[new_column, new_row]}"
+    #   true
+    # else
+    #   false
+    # end
+    board[new_column][new_row].color == color
   end
 
   def capture_move?(new_column, new_row, board)

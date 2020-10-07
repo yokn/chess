@@ -9,7 +9,6 @@ class Game
 
   def setup_game
     @current_player = @player1
-    @board.set_pieces
     play_game
   end
 
