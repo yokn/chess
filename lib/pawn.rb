@@ -48,6 +48,8 @@ class Pawn < Piece
     nodes
   end
 
+  private
+
   def blocked_pawn?(new_column, new_row, board)
     board[new_column][new_row] != '-'
   end
@@ -59,7 +61,7 @@ class Pawn < Piece
       new_row = pos[1] + move[1]
 
       # not sure if it needs to be -1
-      next if over_limit?(new_row, new_column, 7, -1)
+      next if out_of_bounds?(new_row, new_column, 7, -1)
 
       tile = board[new_column][new_row]
       @available_moves << tile.position unless tile.nil? || tile == '-' || tile.color == color || color == 'W'
@@ -69,15 +71,10 @@ class Pawn < Piece
       new_column = pos[0] + move[0]
       new_row = pos[1] + move[1]
 
-      next if over_limit?(new_row, new_column, 8, 0)
+      next if out_of_bounds?(new_row, new_column, 8, 0)
 
       tile = board[new_column][new_row]
       @available_moves << tile.position unless tile.nil? || tile == '-' || tile.color == color || color == 'B'
     end
-  end
-
-  # don't know why they need different limits
-  def over_limit?(new_row, new_column, upper_limit, lower_limit)
-    new_row > upper_limit || new_row < lower_limit || new_column > upper_limit || new_column < lower_limit
   end
 end

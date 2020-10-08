@@ -49,8 +49,9 @@ class Piece
       @already_moved.include?([new_column, new_row])
   end
 
-  def out_of_bounds?(new_column, new_row)
-    if (new_column > 7) || new_column.negative? || ((new_row > 7) || new_row.negative?)
+  # not sure why pawns need different limits
+  def out_of_bounds?(new_column, new_row, upper_limit = 7, lower_limit = 0)
+    if (new_column > upper_limit) || new_column < lower_limit || ((new_row > upper_limit) || new_row < lower_limit)
       # p "oob for #{position} at #{[new_column, new_row]}"
       true
     else
