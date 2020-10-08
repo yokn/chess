@@ -12,6 +12,7 @@ module Translator
   end
 
   def self.to_matrix(pos)
+    pos = pos.downcase
     column = ALGEBRAIC_COLUMN.index(pos[0])
     row = ALGEBRAIC_ROW.reverse.index(pos[1])
     [row, column]
