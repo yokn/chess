@@ -16,8 +16,7 @@
 # Make it so you can save the board at any time (remember how to serialize?)
 # Add special moves: En passant, castling, promotion
 # Add basic ai
-# Input validation
-# Add tests for pawn double moves, captures, blocking
+# Make tests not print anything to the console
 
 require_relative 'game'
 require_relative 'board'

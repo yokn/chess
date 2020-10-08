@@ -142,6 +142,34 @@ describe Board do
         expect(target_tile.color).to eq('W')
         expect(own_tile).to eq('-')
       end
+      it 'sliders can move multiple tiles in a single move' do
+        # clear the way for the bishop to move
+        expect(board).to receive(:player_input).and_return('b2')
+        expect(board).to receive(:player_input).and_return('b4')
+        board.get_move('W')
+
+        # bishop moves two tiles in a single move
+        expect(board).to receive(:player_input).and_return('c1')
+        expect(board).to receive(:player_input).and_return('a3')
+        board.get_move('W')
+        board_array = board.instance_variable_get(:@board)
+        own_tile = board_array[7][2]
+        target_tile = board_array[5][0]
+        expect(target_tile.class.name).to eq('Bishop')
+        expect(target_tile.color).to eq('W')
+        expect(own_tile).to eq('-')
+      end
+      it 'knights can jump over pieces' do
+        expect(board).to receive(:player_input).and_return('b1')
+        expect(board).to receive(:player_input).and_return('c3')
+        board.get_move('W')
+        board_array = board.instance_variable_get(:@board)
+        own_tile = board_array[7][1]
+        target_tile = board_array[5][2]
+        expect(target_tile.class.name).to eq('Night')
+        expect(target_tile.color).to eq('W')
+        expect(own_tile).to eq('-')
+      end
     end
     # context 'when checking for a win' do
     #   subject(:board) { described_class.new }
