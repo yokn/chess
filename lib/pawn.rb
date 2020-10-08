@@ -25,7 +25,10 @@ class Pawn < Piece
     end
   end
 
+  # remember to not allow promotion if it puts the same color king at check
   def generate_available_moves(pos, parent, board, nodes = [])
+    return promotion(pos, board) if can_promote?(pos, board)
+
     moveset.each do |direction|
       blocked = false
       direction.each do |move|
@@ -45,10 +48,29 @@ class Pawn < Piece
       end
     end
     add_diagonal_captures(pos, board)
+
     nodes
   end
 
   private
+
+  def can_promote?(pos, board)
+    tile = board[pos[0]][pos[1]]
+    color = tile.color
+    case color
+    when 'W'
+      tile.position[0] == 0
+    when 'B'
+      tile.position[0] == 7
+    end
+  end
+
+  def promotion(pos, board, promotion_piece = Queen)
+    color = board[pos[0]][pos[1]].color
+    board[pos[0]][pos[1]] = promotion_piece.new(pos, color)
+    # for Piece::#level_order
+    []
+  end
 
   def blocked_pawn?(new_column, new_row, board)
     board[new_column][new_row] != '-'

@@ -142,6 +142,63 @@ describe Board do
         expect(target_tile.color).to eq('W')
         expect(own_tile).to eq('-')
       end
+      context 'promotion' do
+        it 'white pawns can promote' do
+          # setting up the pawn
+          expect(board).to receive(:player_input).and_return('a2')
+          expect(board).to receive(:player_input).and_return('a4')
+          board.get_move('W')
+          expect(board).to receive(:player_input).and_return('a4')
+          expect(board).to receive(:player_input).and_return('a5')
+          board.get_move('W')
+          expect(board).to receive(:player_input).and_return('a5')
+          expect(board).to receive(:player_input).and_return('a6')
+          board.get_move('W')
+          expect(board).to receive(:player_input).and_return('a6')
+          expect(board).to receive(:player_input).and_return('b7')
+          board.get_move('W')
+
+          # the promotion move
+          expect(board).to receive(:player_input).and_return('b7')
+          expect(board).to receive(:player_input).and_return('a8')
+          board.get_move('W')
+
+          board_array = board.instance_variable_get(:@board)
+          own_tile = board_array[1][1]
+          target_tile = board_array[0][0]
+          expect(target_tile.class.name).to eq('Queen')
+          expect(target_tile.color).to eq('W')
+          expect(own_tile).to eq('-')
+        end
+        it 'black pawns can promote' do
+          # setting up the pawn
+          expect(board).to receive(:player_input).and_return('b7')
+          expect(board).to receive(:player_input).and_return('b5')
+          board.get_move('B')
+          expect(board).to receive(:player_input).and_return('b5')
+          expect(board).to receive(:player_input).and_return('b4')
+          board.get_move('B')
+          expect(board).to receive(:player_input).and_return('b4')
+          expect(board).to receive(:player_input).and_return('b3')
+          board.get_move('B')
+          expect(board).to receive(:player_input).and_return('b3')
+          expect(board).to receive(:player_input).and_return('a2')
+          board.get_move('B')
+
+          # the promotion move
+          expect(board).to receive(:player_input).and_return('a2')
+          expect(board).to receive(:player_input).and_return('b1')
+          board.get_move('B')
+
+          board_array = board.instance_variable_get(:@board)
+          own_tile = board_array[6][0]
+          target_tile = board_array[7][1]
+          expect(target_tile.class.name).to eq('Queen')
+          expect(target_tile.color).to eq('B')
+          expect(own_tile).to eq('-')
+        end
+      end
+
       it 'sliders can move multiple tiles in a single move' do
         # clear the way for the bishop to move
         expect(board).to receive(:player_input).and_return('b2')

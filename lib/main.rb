@@ -17,6 +17,7 @@
 # Add special moves: En passant, castling, promotion
 # Add basic ai
 # Make tests not print anything to the console
+# Allow players to select their promotion_piece
 
 require_relative 'game'
 require_relative 'board'
