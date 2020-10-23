@@ -26,11 +26,14 @@ class Pawn < Piece
   end
 
   # remember to not allow promotion if it puts the same color king at check
-  def generate_available_moves(pos, parent, board, nodes = [])
+  # make sure everything related to pawn checking is tested (especially diagonal captures)
+  def generate_available_moves(pos, parent, board, _danger_squares, nodes = [])
     return promotion(pos, board) if can_promote?(pos, board)
 
     moveset.each do |direction|
       blocked = false
+      king = find_opponent_king(board, color)
+      found_check = false
       direction.each do |move|
         new_column = pos[0] + move[0]
         new_row = pos[1] + move[1]
@@ -43,9 +46,52 @@ class Pawn < Piece
         end
 
         @already_moved << [new_column, new_row]
+        if check?(new_column, new_row, board)
+          # self.checker = true
+          set_check(king)
+          found_check = true
+        end
         nodes << Node.new([new_column, new_row], parent)
         # p "[#{new_column},#{new_row}] is possible for #{self.class.name} at #{pos}"
       end
+      @attack_ray = direction if found_check
+    end
+    add_diagonal_captures(pos, board)
+
+    nodes
+  end
+
+  def generate_available_moves_in_check(pos, parent, board, _danger_squares, nodes = [])
+    return promotion(pos, board) if can_promote?(pos, board)
+
+    p 'generating moves in check'
+    # self.checker = false
+    moveset.each do |direction|
+      blocked = false
+      king = find_opponent_king(board, color)
+      found_check = false
+      direction.each do |move|
+        new_column = pos[0] + move[0]
+        new_row = pos[1] + move[1]
+        if common_legality_checks(new_column, new_row, board) ||
+           blocked_pawn?(new_column, new_row, board) ||
+           blocked ||
+           !can_block_check?(new_column, new_row, board)
+
+          blocked = true
+          next
+        end
+
+        @already_moved << [new_column, new_row]
+        if check?(new_column, new_row, board)
+          # self.checker = true
+          set_check(king)
+          found_check = true
+        end
+        nodes << Node.new([new_column, new_row], parent)
+        # p "[#{new_column},#{new_row}] is possible for #{self.class.name} at #{pos}"
+      end
+      @attack_ray = direction if found_check
     end
     add_diagonal_captures(pos, board)
 
@@ -77,8 +123,10 @@ class Pawn < Piece
   end
 
   # pasta la vista
+  # THIS NEEDS TO PREVENT KING MOVES DIAGONALLY or maybe in King's movegen
   def add_diagonal_captures(pos, board)
     DIAGONAL_CAPTURES_BLACK_PAWN.each do |move|
+      king = find_opponent_king(board, 'B')
       new_column = pos[0] + move[0]
       new_row = pos[1] + move[1]
 
@@ -87,9 +135,15 @@ class Pawn < Piece
 
       tile = board[new_column][new_row]
       @available_moves << tile.position unless tile.nil? || tile == '-' || tile.color == color || color == 'W'
+      next unless check?(new_column, new_row, board)
+
+      # self.checker = true
+      set_check(king)
+      @attack_ray = move
     end
 
     DIAGONAL_CAPTURES_WHITE_PAWN.each do |move|
+      king = find_opponent_king(board, 'W')
       new_column = pos[0] + move[0]
       new_row = pos[1] + move[1]
 
@@ -97,6 +151,11 @@ class Pawn < Piece
 
       tile = board[new_column][new_row]
       @available_moves << tile.position unless tile.nil? || tile == '-' || tile.color == color || color == 'B'
+      next unless check?(new_column, new_row, board)
+
+      # self.checker = true
+      set_check(king)
+      @attack_ray = move
     end
   end
 end

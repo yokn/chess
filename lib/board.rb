@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 class Board
   attr_reader :board
   def initialize
     @board = Array.new(8) { Array.new(8, '-') }
+    @dummy_piece = Piece.new
+    @white_attacked_squares = []
+    @black_attacked_squares = []
     set_pieces
     generator
   end
@@ -46,6 +48,7 @@ class Board
   def to_s(board = @board, result = [])
     board.each do |row|
       row.each do |tile|
+        puts "#{tile.color} #{tile.class.name} is in check!" if tile.class.name == 'King' && tile.in_check
         result << (tile == '-' ? '-' : tile.class.name[0])
       end
     end
@@ -83,22 +86,107 @@ class Board
   end
 
   def display_available_moves(old_pos)
-    puts 'available moves:'
+    puts 'Available moves:'
     @board[old_pos[0].to_i][old_pos[1].to_i].available_moves.each do |move|
       print Translator.to_algebraic(move) + ' '
     end
     puts ''
   end
 
+  # need to generate the moves for the kings last--but what about the order of the kings themselves?
+
   def generator
+    # incredibly bad hack
+    2.times do
+      # @dummy_piece.find_checkers(board, 'W')
+      # @dummy_piece.find_checkers(board, 'B')
+      white_king_check = @dummy_piece.find_own_king(board, 'W').in_check
+      black_king_check = @dummy_piece.find_own_king(board, 'B').in_check
+
+      # white_checkers[0].level_order unless white_checkers.empty?
+      # black_checkers[0].level_order unless black_checkers.empty?
+
+      @board.each do |row|
+        row.each do |tile|
+          next if tile == '-'
+          next unless tile.checker
+
+          p "working on CHECKER: #{tile.color} #{tile.class.name}"
+          if tile.color == 'W'
+
+            @white_attacked_squares += tile.level_order(@board, @black_attacked_squares, white_king_check)
+          else
+
+            # this returns nil somehow if you move a piece you are not legally allowed to move while your king is in check
+            @black_attacked_squares += tile.level_order(@board, @white_attacked_squares, black_king_check)
+          end
+        end
+      end
+
+      @board.each_with_index do |row, index|
+        row.each_with_index do |tile, inner_index|
+          next if tile == '-'
+
+          p "working on piece: #{tile.color} #{tile.class.name}"
+          if tile.color == 'W'
+            if tile.class.name == 'King'
+              @white_king = tile
+              next
+            end
+            @white_attacked_squares += tile.level_order(@board, @black_attacked_squares, white_king_check)
+          else
+            if tile.class.name == 'King'
+              @black_king = tile
+              next
+            end
+            # this returns nil somehow if you move a piece you are not legally allowed to move while your king is in check
+            @black_attacked_squares += tile.level_order(@board, @white_attacked_squares, black_king_check)
+          end
+
+          # make sure kings' moves get generated after every other piece on the board
+          next unless (index == 7) && (inner_index > 6)
+
+          # does the order matter?
+          @white_attacked_squares += @white_king.level_order(@board, @black_attacked_squares, white_king_check)
+          @black_attacked_squares += @black_king.level_order(@board, @white_attacked_squares, black_king_check)
+        end
+      end
+      remove_checker_pos_from_danger_squares_unless_supported(@white_attacked_squares, 'W')
+      remove_checker_pos_from_danger_squares_unless_supported(@black_attacked_squares, 'B')
+      @dummy_piece.find_checkers(board, 'W')
+      @dummy_piece.find_checkers(board, 'B')
+    end
+  end
+
+  # removes the checker's own position from danger squares
+  # unless any piece of the checker's color's available moves include checkers posititon
+  # this should solve 2 different problems:
+  # king not being able to capture the checker to get out of check
+  # and king being able capture the checker to get out of check even if there is a piece supporting the checker
+  def remove_checker_pos_from_danger_squares_unless_supported(attacked_squares, color)
+    @checker = nil
     @board.each do |row|
       row.each do |tile|
         next if tile == '-'
+        next unless tile.checker && tile.color == color
 
-        # p "working on piece: #{tile.color} #{tile.class.name}"
-        tile.level_order(@board)
+        @checker = tile
       end
     end
+
+    return if @checker.nil?
+
+    @board.each do |row|
+      row.each do |tile|
+        next if tile == '-'
+        next unless tile.color == color
+        next unless tile.available_moves.include?(@checker.position)
+
+        p "found a supporter: #{tile.color} #{tile.class.name} at #{tile.position}"
+        return
+      end
+    end
+    attacked_squares.delete(@checker.position)
   end
 
   def valid_move?(old_pos, new_pos)

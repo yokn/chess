@@ -14,10 +14,15 @@
 # Display the game result
 
 # Make it so you can save the board at any time (remember how to serialize?)
-# Add special moves: En passant, castling, promotion
+# Add special moves: En passant, castling
 # Add basic ai
 # Make tests not print anything to the console
 # Allow players to select their promotion_piece
+# Prevent kings from moving to squares pawns can take on
+# allow kings to move in front of pawns
+# ^ might want to differentiate between pushes and captures for pawns (or maybe all pieces?)
+# need to remove the opposing king from the board when checking this for slider x-rays
+# refactor everything done after the pawn commit
 
 require_relative 'game'
 require_relative 'board'
